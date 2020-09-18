@@ -25,7 +25,7 @@ export const Outline: React.StatelessComponent<IOutlineProp> = ({ outline }: IOu
     if (outline.data === undefined) {
         return (
             <div className="outline">
-                <h4 className="placeholder">{!!outline ? null : 'Results go here'}</h4>
+                <h4 className="placeholder">{!!outline ? null : 'Select Result to Display Here'}</h4>
             </div>
         )
     } else if (outline.data.type === "Failure") {
@@ -55,17 +55,17 @@ export const Outline: React.StatelessComponent<IOutlineProp> = ({ outline }: IOu
         if (q.children) {
             q.children.forEach(function (c: any) {
                 if (c.type === "i_answer") {
-                    post.push(<b>Instructor Answer</b>);
+                    post.push(<b>Instructor Answer <small>({ "thanks! x" +c.tag_endorse_arr.length })</small></b>);
                     post.push(<div style={{ textIndent: 0 }} dangerouslySetInnerHTML={{ __html: c.history[0].content }} />);
                 } else if (c.type === "s_answer") {
-                    post.push(<b>Student Answer</b>);
+                    post.push(<b>Student Answer <small>({ "thanks! x" +c.tag_endorse_arr.length })</small> </b>);
                     post.push(<div style={{ textIndent: 0 }} dangerouslySetInnerHTML={{ __html: c.history[0].content }} />);
                 } else { //followup
-                    post.push(<b>Followup</b>)
+                    post.push(<b>Followup <small>({ "helpful! x" +c.tag_good_arr.length })</small></b>)
                     post.push(<div style={{ textIndent: 0 }} dangerouslySetInnerHTML={{ __html: c.subject }} />);
                 }
                 c.children.forEach(function (f: any) {
-                    post.push(<div className="inner"><i>Sub-followup</i></div>)
+                    post.push(<div className="inner"><i>Sub-followup <small>({ "helpful! x" +c.tag_good_arr.length })</small></i></div>)
                     post.push(<div className="inner" dangerouslySetInnerHTML={{ __html: f.subject }} />);
                 });
             });

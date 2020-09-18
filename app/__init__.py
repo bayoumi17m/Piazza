@@ -9,7 +9,6 @@ start_import = time.time()
 from app.search.similarity import *
 from app.search.boolean_search import *
 import app.utils.vectorizer as vecPy
-import app.utils.split_vectorizer as vecPySplit
 end_import = time.time()
 import logging
 import html2text
@@ -112,6 +111,17 @@ def search_results():
             item["score"] = score
 
         if courseSelection == "CS 4300":
+            claims = get_claims(access_token, app.config["APP_ID"])
+            to_json = []
+            for claim in claims["scope"]:
+                if app.config["COURSE_MAPPING"].get(claim,"")!="":
+                    to_json.append(app.config["COURSE_MAPPING"].get(claim).get("courseName"))
+            
+            if "CS 4300" in to_json:
+                pass
+            else:
+                return jsonify([])
+            
             h = html2text.HTML2Text()
             h.ignore_links = True
             parsed_piazza = h.handle(coursePiazzaDict["CS 4300"].get_post(app.config["PIAZZA_CS4300_TOKEN_POST"])["history"][0]["content"])
@@ -176,6 +186,11 @@ def tokeVerify():
     # print("HELLOR: {}".format(course not in auth_courses))
     if course not in auth_courses:
         return "NO"
+    if course == "CS 4300":
+        if their_token == "4300":
+            return "OK"
+        else:
+            return "NO"
     h = html2text.HTML2Text()
     h.ignore_links = True
     parsed_piazza = h.handle(coursePiazzaDict[course].get_post(app.config["PIAZZA_" +  course.replace(" ", "") + "_TOKEN_POST"])["history"][0]["content"])
